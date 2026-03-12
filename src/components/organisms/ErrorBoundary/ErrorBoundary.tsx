@@ -18,7 +18,7 @@ function ErrorBoundary({
   ...props
 }: Properties) {
   const onErrorReport = (error: unknown, info: ErrorInfo) => {
-    // use any crash reporting tool here
+    console.error('[ErrorBoundary] Caught error:', error, info);
     return onError?.(error, info);
   };
 

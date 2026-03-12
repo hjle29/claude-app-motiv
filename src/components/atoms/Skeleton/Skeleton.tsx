@@ -34,7 +34,7 @@ function SkeletonLoader({
 
   const animatedStyles = useAnimatedStyle(() => ({
     opacity: opacity.value,
-  }));
+  }), [opacity]);
 
   useEffect(() => {
     if (!loading) {

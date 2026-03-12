@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyApp</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; }
+      #root { display: flex; min-height: 100vh; }
+    </style>
+    <script>
+      window.onerror = function(msg, src, line, col, err) {
+        document.getElementById('root').innerHTML =
+          '<pre style="color:red;padding:20px;white-space:pre-wrap">' +
+          msg + '\n\n' + (err ? err.stack : '') + '</pre>';
+        return true;
+      };
+      window.onunhandledrejection = function(e) {
+        document.getElementById('root').innerHTML =
+          '<pre style="color:red;padding:20px;white-space:pre-wrap">Unhandled Promise: ' + e.reason + '</pre>';
+      };
+    </script>
+  </head>
+  <body>
+    <div id="root"><p id="status" style="padding:20px;font-family:sans-serif">Loading...</p></div>
+    <script>
+      document.getElementById('status').textContent = 'HTML loaded, waiting for bundle...';
+    </script>
+  </body>
+</html>
