@@ -10,6 +10,6 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testMatch: ['**/*.test.ts?(x)', '**/*.test.js?(x)'],
   transformIgnorePatterns: [
-    'node_modules/(?!(jest-)?react-native|@react-native|@react-native-community|@react-navigation|ky)',
+    'node_modules/(?!(jest-)?react-native|@react-native|@react-native-community|@react-navigation|ky|react-native-mmkv)',
   ],
 };
