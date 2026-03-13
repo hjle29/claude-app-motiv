@@ -1,7 +1,9 @@
+// jest.mock must appear before imports — Babel hoists it, but keep it first in source
 jest.mock('@/store/storage', () => {
   const store: Record<string, string> = {};
   return {
     appStorage: {
+      delete: (key: string) => { delete store[key]; },
       getString: (key: string) => store[key] ?? undefined,
       set: (key: string, value: string) => { store[key] = value; },
     },
@@ -18,6 +20,11 @@ const makeRoutine = (id: string) => ({
 });
 
 describe('routineStore', () => {
+  beforeEach(() => {
+    routineStore.deleteRoutine('r-1');
+    routineStore.deleteRoutine('r-2');
+  });
+
   it('returns empty array when no routines stored', () => {
     expect(routineStore.getRoutines()).toEqual([]);
   });
