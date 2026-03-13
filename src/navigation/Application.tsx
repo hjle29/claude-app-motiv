@@ -2,9 +2,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import type { RootStackParamList } from '@/navigation/types';
+
 import { useOnboardingStatus } from '@/hooks';
 import { Paths } from '@/navigation/paths';
-import type { RootStackParamList } from '@/navigation/types';
 import { useTheme } from '@/theme';
 
 import { Example, FutureSelf, GoalSetup, Startup, StepsSetup } from '@/screens';
