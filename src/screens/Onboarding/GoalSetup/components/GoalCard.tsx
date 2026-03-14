@@ -1,12 +1,12 @@
+import type { Goal } from '@/store/schemas';
+
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '@/theme';
 
-import type { Goal } from '@/store/schemas';
-
 type Props = {
-  goal: Goal;
-  onDelete: (id: string) => void;
+  readonly goal: Goal;
+  readonly onDelete: (id: string) => void;
 };
 
 function GoalCard({ goal, onDelete }: Props) {
@@ -22,7 +22,7 @@ function GoalCard({ goal, onDelete }: Props) {
         <Text style={[fonts.size_12, fonts.gray200]}>{goal.keywords.join(', ')}</Text>
       </View>
       <TouchableOpacity
-        onPress={() => onDelete(goal.id)}
+        onPress={() => { onDelete(goal.id); }}
         testID={`goal-delete-${goal.id}`}
       >
         <Text style={[fonts.size_14, fonts.red500]}>Remove</Text>

@@ -1,14 +1,14 @@
+import type { Step } from '@/store/schemas';
+
 import { useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '@/theme';
 
-import type { Step } from '@/store/schemas';
-
 type Props = {
-  goalId: string;
-  goalKeywords: string[];
-  onAdd: (step: Step) => void;
+  readonly goalId: string;
+  readonly goalKeywords: string[];
+  readonly onAdd: (step: Step) => void;
 };
 
 function StepForm({ goalId, goalKeywords, onAdd }: Props) {
@@ -18,7 +18,13 @@ function StepForm({ goalId, goalKeywords, onAdd }: Props) {
 
   const handleAdd = () => {
     if (!description.trim()) return;
-    const oneYearFromNow = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+    const DAYS_IN_YEAR = 365;
+    const HOURS_IN_DAY = 24;
+    const MINUTES_IN_HOUR = 60;
+    const SECONDS_IN_MINUTE = 60;
+    const MS_IN_SECOND = 1000;
+    const ONE_YEAR_MS = DAYS_IN_YEAR * HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE * MS_IN_SECOND;
+    const oneYearFromNow = new Date(Date.now() + ONE_YEAR_MS)
       .toISOString()
       .split('T')[0];
     const step: Step = {

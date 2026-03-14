@@ -1,3 +1,9 @@
+export type CategoryQA = {
+  keyword: string;
+  label: string;
+  rounds: [QARound, QARound, QARound];
+};
+
 export type QAOption = {
   keyword: string;
   label: string;
@@ -6,12 +12,6 @@ export type QAOption = {
 export type QARound = {
   options: QAOption[];
   question: string;
-};
-
-export type CategoryQA = {
-  keyword: string;
-  label: string;
-  rounds: [QARound, QARound, QARound];
 };
 
 export const qaTree: CategoryQA[] = [

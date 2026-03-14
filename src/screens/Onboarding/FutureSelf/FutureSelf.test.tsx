@@ -15,7 +15,7 @@ jest.mock('@/store/goalStore', () => ({
   },
 }));
 
-jest.mock('@react-navigation/native', () => ({
+jest.mock('@react-navigation/native', (): Record<string, unknown> => ({
   ...jest.requireActual('@react-navigation/native'),
   useNavigation: () => ({ navigate: mockNavigate }),
 }));

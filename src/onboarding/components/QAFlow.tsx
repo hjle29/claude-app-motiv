@@ -1,13 +1,13 @@
+import type { QARound } from '@/onboarding/data/qaTree';
+
 import { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '@/theme';
 
-import type { QARound } from '@/onboarding/data/qaTree';
-
 type Props = {
-  onComplete: (answers: string[], keywords: string[]) => void;
-  rounds: [QARound, QARound, QARound];
+  readonly onComplete: (answers: string[], keywords: string[]) => void;
+  readonly rounds: [QARound, QARound, QARound];
 };
 
 function QAFlow({ onComplete, rounds }: Props) {
@@ -25,7 +25,7 @@ function QAFlow({ onComplete, rounds }: Props) {
     if (currentRound < 2) {
       setSelectedAnswers(newAnswers);
       setSelectedKeywords(newKeywords);
-      setCurrentRound(prev => prev + 1);
+      setCurrentRound(previous => previous + 1);
     } else {
       onComplete(newAnswers, newKeywords);
     }
@@ -39,7 +39,7 @@ function QAFlow({ onComplete, rounds }: Props) {
       {round.options.map(option => (
         <TouchableOpacity
           key={option.keyword}
-          onPress={() => handleSelect(option.label, option.keyword)}
+          onPress={() => { handleSelect(option.label, option.keyword); }}
           style={[gutters.marginBottom_12, gutters.paddingHorizontal_16, gutters.paddingVertical_12]}
           testID={`qa-option-${option.keyword}`}
         >

@@ -1,21 +1,19 @@
+import type { Goal } from '@/store/schemas';
+
+import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
-
-import { useTheme } from '@/theme';
-
 import { Paths } from '@/navigation/paths';
 import type { RootScreenProps } from '@/navigation/types';
-
-import type { Goal } from '@/store/schemas';
-import { goalStore } from '@/store/goalStore';
-
-import { qaTree } from '@/onboarding/data/qaTree';
-import QAFlow from '@/onboarding/components/QAFlow';
-import { extractKeywords, generateGoalStatement } from '@/onboarding/utils/generateGoal';
+import { useTheme } from '@/theme';
 
 import { SafeScreen } from '@/components/templates';
+
+import QAFlow from '@/onboarding/components/QAFlow';
+import { qaTree } from '@/onboarding/data/qaTree';
+import { extractKeywords, generateGoalStatement } from '@/onboarding/utils/generateGoal';
+import { goalStore } from '@/store/goalStore';
 
 import CategoryButtons from './components/CategoryButtons';
 import GoalCard from './components/GoalCard';
@@ -29,7 +27,7 @@ function GoalSetup() {
 
   const [goals, setGoals] = useState<Goal[]>(() => goalStore.getGoals());
   const [mode, setMode] = useState<Mode>('idle');
-  const [activeCategory, setActiveCategory] = useState<{ keyword: string; label: string } | null>(null);
+  const [activeCategory, setActiveCategory] = useState<{ keyword: string; label: string } | undefined>(undefined);
   const [freeText, setFreeText] = useState('');
 
   const handleCategorySelect = (label: string, keyword: string) => {
@@ -47,7 +45,7 @@ function GoalSetup() {
     const keywords = extractKeywords(activeCategory.keyword, answerKeywords);
     persistGoal(statement, keywords, activeCategory.label);
     setMode('idle');
-    setActiveCategory(null);
+    setActiveCategory(undefined);
   };
 
   const handleFreeTextSubmit = () => {
@@ -80,7 +78,7 @@ function GoalSetup() {
 
   const activeQATree = activeCategory
     ? qaTree.find(c => c.keyword === activeCategory.keyword)
-    : null;
+    : undefined;
 
   const canAddMore = goals.length < MAX_GOALS;
 
@@ -95,11 +93,10 @@ function GoalSetup() {
         </Text>
 
         {goals.map(goal => (
-          <GoalCard key={goal.id} goal={goal} onDelete={handleDelete} />
+          <GoalCard goal={goal} key={goal.id} onDelete={handleDelete} />
         ))}
 
-        {canAddMore && mode === 'idle' && (
-          <>
+        {canAddMore && mode === 'idle' ? <>
             <TextInput
               onChangeText={setFreeText}
               onSubmitEditing={handleFreeTextSubmit}
@@ -110,12 +107,9 @@ function GoalSetup() {
               value={freeText}
             />
             <CategoryButtons onSelect={handleCategorySelect} />
-          </>
-        )}
+          </> : undefined}
 
-        {mode === 'qa' && activeQATree && (
-          <QAFlow onComplete={handleQAComplete} rounds={activeQATree.rounds} />
-        )}
+        {mode === 'qa' && activeQATree ? <QAFlow onComplete={handleQAComplete} rounds={activeQATree.rounds} /> : undefined}
 
         {mode === 'freetext' && (
           <View>

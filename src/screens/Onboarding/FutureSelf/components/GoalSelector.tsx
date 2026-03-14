@@ -1,6 +1,6 @@
-import { Text, TouchableOpacity, View } from 'react-native';
-
 import type { Goal } from '@/store/schemas';
+
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '@/theme';
 

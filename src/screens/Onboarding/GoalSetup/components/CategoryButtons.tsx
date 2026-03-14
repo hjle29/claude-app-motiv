@@ -5,7 +5,7 @@ import { useTheme } from '@/theme';
 import { qaTree } from '@/onboarding/data/qaTree';
 
 type Props = {
-  onSelect: (categoryLabel: string, categoryKeyword: string) => void;
+  readonly onSelect: (categoryLabel: string, categoryKeyword: string) => void;
 };
 
 const OTHERS = { keyword: 'others', label: 'Others' };
@@ -20,7 +20,7 @@ function CategoryButtons({ onSelect }: Props) {
         {categories.map(cat => (
           <TouchableOpacity
             key={cat.keyword}
-            onPress={() => onSelect(cat.label, cat.keyword)}
+            onPress={() => { onSelect(cat.label, cat.keyword); }}
             style={[gutters.marginRight_12, gutters.paddingHorizontal_16, gutters.paddingVertical_8]}
             testID={`category-${cat.keyword}`}
           >

@@ -1,7 +1,7 @@
 type FutureSelfInput = {
   answers: string[];
   goalStatement: string;
-  timeframe: '5yr' | '10yr';
+  timeframe: '10yr' | '5yr';
 };
 
 export function generateFutureSelfNarrative({

@@ -1,17 +1,16 @@
+import type { Step } from '@/store/schemas';
+
+import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
-
-import { useTheme } from '@/theme';
-
 import { Paths } from '@/navigation/paths';
 import type { RootScreenProps } from '@/navigation/types';
-
-import type { Step } from '@/store/schemas';
-import { goalStore } from '@/store/goalStore';
+import { useTheme } from '@/theme';
 
 import { SafeScreen } from '@/components/templates';
+
+import { goalStore } from '@/store/goalStore';
 
 import StepForm from './components/StepForm';
 
@@ -23,9 +22,9 @@ function StepsSetup() {
   const [stepsByGoal, setStepsByGoal] = useState<Record<string, Step[]>>({});
 
   const handleAddStep = (goalId: string, step: Step) => {
-    setStepsByGoal(prev => ({
-      ...prev,
-      [goalId]: [...(prev[goalId] ?? []), step],
+    setStepsByGoal(previous => ({
+      ...previous,
+      [goalId]: [...(previous[goalId] ?? []), step],
     }));
   };
 
@@ -60,7 +59,7 @@ function StepsSetup() {
             <StepForm
               goalId={goal.id}
               goalKeywords={goal.keywords}
-              onAdd={step => handleAddStep(goal.id, step)}
+              onAdd={step => { handleAddStep(goal.id, step); }}
             />
           </View>
         ))}

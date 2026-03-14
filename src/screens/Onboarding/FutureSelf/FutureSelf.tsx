@@ -1,21 +1,19 @@
+import type { Goal } from '@/store/schemas';
+
+import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
-
-import { useTheme } from '@/theme';
-
 import { Paths } from '@/navigation/paths';
 import type { RootScreenProps } from '@/navigation/types';
-
-import type { Goal } from '@/store/schemas';
-import { goalStore } from '@/store/goalStore';
-
-import { futureSelfRounds } from '@/onboarding/data/qaTree';
-import QAFlow from '@/onboarding/components/QAFlow';
-import { generateFutureSelfNarrative } from '@/onboarding/utils/generateFutureSelf';
+import { useTheme } from '@/theme';
 
 import { SafeScreen } from '@/components/templates';
+
+import QAFlow from '@/onboarding/components/QAFlow';
+import { futureSelfRounds } from '@/onboarding/data/qaTree';
+import { generateFutureSelfNarrative } from '@/onboarding/utils/generateFutureSelf';
+import { goalStore } from '@/store/goalStore';
 
 import GoalSelector from './components/GoalSelector';
 import TimeframeSelector from './components/TimeframeSelector';
@@ -27,8 +25,8 @@ function FutureSelf() {
   const navigation = useNavigation<RootScreenProps<typeof Paths.OnboardingFutureSelf>['navigation']>();
 
   const goals = goalStore.getGoals();
-  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
-  const [selectedTimeframe, setSelectedTimeframe] = useState<Timeframe | null>(null);
+  const [selectedGoal, setSelectedGoal] = useState<Goal | undefined>(undefined);
+  const [selectedTimeframe, setSelectedTimeframe] = useState<Timeframe | undefined>(undefined);
   const [showQA, setShowQA] = useState(false);
 
   const handleSkip = () => {
@@ -58,8 +56,8 @@ function FutureSelf() {
       timeframe: selectedTimeframe,
     });
     setShowQA(false);
-    setSelectedGoal(null);
-    setSelectedTimeframe(null);
+    setSelectedGoal(undefined);
+    setSelectedTimeframe(undefined);
     // Navigate forward after saving — user can add more or proceed
     navigation.navigate(Paths.OnboardingStepsSetup);
   };
@@ -79,22 +77,18 @@ function FutureSelf() {
             <GoalSelector
               goals={goals}
               onSelect={handleGoalSelect}
-              selectedId={selectedGoal?.id ?? null}
+              selectedId={selectedGoal?.id ?? undefined}
             />
-            {selectedGoal && (
-              <TimeframeSelector
+            {selectedGoal ? <TimeframeSelector
                 onSelect={handleTimeframeSelect}
                 selected={selectedTimeframe}
-              />
-            )}
+              /> : undefined}
           </>
         )}
 
-        {showQA && (
-          <View testID="future-self-qa">
+        {showQA ? <View testID="future-self-qa">
             <QAFlow onComplete={handleQAComplete} rounds={futureSelfRounds} />
-          </View>
-        )}
+          </View> : undefined}
 
         <TouchableOpacity
           onPress={handleSkip}
