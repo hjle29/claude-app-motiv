@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
-import type { Goal } from '@/store/schemas';
+import type { FutureSelf, Goal } from '@/store/schemas';
+
+import { goalStore } from '@/store/goalStore';
 
 import { useTheme } from '@/theme';
 
@@ -10,7 +12,7 @@ import { SafeScreen } from '@/components/templates';
 import { useGoals } from '@/hooks/domain/goals/useGoals';
 
 import GoalCard from './components/GoalCard';
-import GoalFormSheet from './components/GoalFormSheet';
+import GoalWizard from './components/GoalWizard';
 
 const EMPTY_STATE_MARGIN_TOP = 48;
 const MAX_ACTIVE_GOALS = 3;
@@ -32,11 +34,14 @@ function Goals() {
     setGoalFormVisible(true);
   }
 
-  function handleGoalSave(goal: Goal) {
+  function handleGoalSave(goal: Goal, futureSelf?: FutureSelf) {
     if (editingGoal) {
       updateGoal(goal);
     } else {
       addGoal(goal);
+    }
+    if (futureSelf) {
+      goalStore.saveFutureSelf(futureSelf);
     }
     setGoalFormVisible(false);
   }
@@ -55,10 +60,12 @@ function Goals() {
           ]}
         >
           <Text style={[fonts.size_24, fonts.bold, fonts.gray800]}>My Goals</Text>
-          {goals.length < MAX_ACTIVE_GOALS && (
+          {goals.length < MAX_ACTIVE_GOALS ? (
             <Pressable onPress={openAddGoal} testID="goals-add-button">
               <Text style={[fonts.size_24, fonts.gray800]}>+</Text>
             </Pressable>
+          ) : (
+            <Text style={[fonts.size_12, fonts.gray400]}>Max 3 — archive one to add more</Text>
           )}
         </View>
 
@@ -89,7 +96,8 @@ function Goals() {
         </ScrollView>
       </View>
 
-      <GoalFormSheet
+      <GoalWizard
+        futureSelf={editingGoal ? futureSelfFor(editingGoal.id) : undefined}
         goal={editingGoal}
         onClose={() => setGoalFormVisible(false)}
         onSave={handleGoalSave}
