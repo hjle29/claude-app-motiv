@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 
 import { useTheme } from '@/theme';
 
@@ -12,6 +12,8 @@ type Props = {
 
 function MonthlyCalendar({ month, monthRates, onSelectDate, selectedDate, year }: Props) {
   const { colors, fonts, gutters, layout } = useTheme();
+  const { width: screenWidth } = useWindowDimensions();
+  const cellWidth = (screenWidth - 32) / 7; // 32 = paddingHorizontal_16 * 2
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDayOfWeek = new Date(year, month, 1).getDay();
@@ -25,9 +27,15 @@ function MonthlyCalendar({ month, monthRates, onSelectDate, selectedDate, year }
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
 
+  const paddedLength = Math.ceil(cells.length / 7) * 7;
+  const paddedCells: (number | null)[] = [
+    ...cells,
+    ...Array.from({ length: paddedLength - cells.length }, () => null),
+  ];
+
   const rows: (number | null)[][] = [];
-  for (let i = 0; i < cells.length; i += 7) {
-    rows.push(cells.slice(i, i + 7));
+  for (let i = 0; i < paddedCells.length; i += 7) {
+    rows.push(paddedCells.slice(i, i + 7));
   }
 
   return (
@@ -39,7 +47,7 @@ function MonthlyCalendar({ month, monthRates, onSelectDate, selectedDate, year }
         <View key={rowIndex} style={[layout.row, gutters.marginBottom_8]}>
           {row.map((day, colIndex) => {
             if (!day) {
-              return <View key={colIndex} style={{ flex: 1, height: 32 }} />;
+              return <View key={colIndex} style={{ width: cellWidth, height: 32 }} />;
             }
             const date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             const rate = monthRates[date] ?? 0;
@@ -59,9 +67,8 @@ function MonthlyCalendar({ month, monthRates, onSelectDate, selectedDate, year }
                     borderColor: isSelected ? colors.purple500 : 'transparent',
                     borderRadius: 6,
                     borderWidth: 2,
-                    flex: 1,
                     height: 32,
-                    marginHorizontal: 2,
+                    width: cellWidth,
                   },
                 ]}
                 testID={`calendar-day-${date}`}

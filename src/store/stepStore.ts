@@ -9,7 +9,13 @@ function getAllSteps(): Step[] {
   const raw = appStorage.getString(STEPS_KEY);
   if (!raw) return [];
   try {
-    return (JSON.parse(raw) as unknown[]).map(s => stepSchema.parse(s));
+    return (JSON.parse(raw) as unknown[]).flatMap(s => {
+      try {
+        return [stepSchema.parse(s)];
+      } catch {
+        return [];
+      }
+    });
   } catch {
     return [];
   }

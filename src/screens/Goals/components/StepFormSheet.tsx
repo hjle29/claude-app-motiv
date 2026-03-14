@@ -22,18 +22,32 @@ function StepFormSheet({ goalId, goalKeywords, onClose, onSave, step, visible }:
 
   const [description, setDescription] = useState('');
   const [deadline, setDeadline] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (visible) {
       setDescription(step?.description ?? '');
       setDeadline(step?.deadline ?? '');
+      setError('');
     }
   }, [visible, step]);
 
   function handleSave() {
     const trimmedDesc = description.trim();
     const trimmedDeadline = deadline.trim();
-    if (!trimmedDesc || !trimmedDeadline) return;
+    if (!trimmedDesc) {
+      setError('Description is required.');
+      return;
+    }
+    if (!trimmedDeadline) {
+      setError('Deadline is required (YYYY-MM-DD).');
+      return;
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmedDeadline)) {
+      setError('Use format YYYY-MM-DD (e.g. 2026-06-01).');
+      return;
+    }
+    setError('');
     const saved: Step = {
       deadline: trimmedDeadline,
       description: trimmedDesc,
@@ -90,6 +104,11 @@ function StepFormSheet({ goalId, goalKeywords, onClose, onSave, step, visible }:
           testID="step-form-deadline"
           value={deadline}
         />
+        {error ? (
+          <Text style={[fonts.size_12, gutters.marginTop_8, { color: colors.red500 }]}>
+            {error}
+          </Text>
+        ) : null}
         <View style={[layout.row, gutters.marginTop_24]}>
           <Pressable
             onPress={onClose}
