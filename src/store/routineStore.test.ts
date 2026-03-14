@@ -63,3 +63,21 @@ describe('routineStore', () => {
     expect(logs[0].skipReason).toBe('sick');
   });
 });
+
+describe('dailyOverride', () => {
+  it('returns empty array when no overrides for a date', () => {
+    expect(routineStore.getDailyOverrideIds('2026-03-12')).toEqual([]);
+  });
+
+  it('adds a routine id to a date override', () => {
+    routineStore.addDailyOverride('2026-03-15', 'r-override-1');
+    expect(routineStore.getDailyOverrideIds('2026-03-15')).toContain('r-override-1');
+  });
+
+  it('does not duplicate the same routine on the same date', () => {
+    routineStore.addDailyOverride('2026-03-16', 'r-dup');
+    routineStore.addDailyOverride('2026-03-16', 'r-dup');
+    const ids = routineStore.getDailyOverrideIds('2026-03-16');
+    expect(ids.filter(id => id === 'r-dup')).toHaveLength(1);
+  });
+});

@@ -57,9 +57,37 @@ function saveDailyLog(log: DailyLog): void {
   appStorage.set(DAILY_LOGS_KEY, JSON.stringify(updated));
 }
 
+const DAILY_OVERRIDES_KEY = 'dailyOverrides';
+
+function getDailyOverrideIds(date: string): string[] {
+  const raw = appStorage.getString(DAILY_OVERRIDES_KEY);
+  if (!raw) return [];
+  try {
+    const all = JSON.parse(raw) as Record<string, string[]>;
+    return all[date] ?? [];
+  } catch {
+    return [];
+  }
+}
+
+function addDailyOverride(date: string, routineId: string): void {
+  const raw = appStorage.getString(DAILY_OVERRIDES_KEY);
+  const all: Record<string, string[]> = raw
+    ? (JSON.parse(raw) as Record<string, string[]>)
+    : {};
+  const existing = all[date] ?? [];
+  if (existing.includes(routineId)) return;
+  appStorage.set(
+    DAILY_OVERRIDES_KEY,
+    JSON.stringify({ ...all, [date]: [...existing, routineId] }),
+  );
+}
+
 export const routineStore = {
+  addDailyOverride,
   deleteRoutine,
   getDailyLogs,
+  getDailyOverrideIds,
   getRoutines,
   saveDailyLog,
   saveRoutine,
