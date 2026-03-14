@@ -35,14 +35,14 @@ describe('GoalSetup', () => {
   it('renders the goal input and category buttons', () => {
     renderGoalSetup();
     expect(screen.getByTestId('goal-text-input')).toBeTruthy();
-    expect(screen.getByTestId('category-family')).toBeTruthy();
     expect(screen.getByTestId('category-health')).toBeTruthy();
+    expect(screen.getByTestId('category-career')).toBeTruthy();
   });
 
   it('tapping a category shows the Q&A flow', () => {
     renderGoalSetup();
-    fireEvent.press(screen.getByTestId('category-family'));
-    expect(screen.getByText('What matters most to you about family?')).toBeTruthy();
+    fireEvent.press(screen.getByTestId('category-health'));
+    expect(screen.getByText("What's your main health focus?")).toBeTruthy();
   });
 
   it('Continue button is disabled with no goals', () => {
