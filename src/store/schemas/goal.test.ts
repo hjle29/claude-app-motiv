@@ -43,3 +43,27 @@ describe('futureSelfSchema', () => {
     expect(() => futureSelfSchema.parse(input)).toThrow();
   });
 });
+
+it('parses a goal with archivedAt set', () => {
+  const input = {
+    archivedAt: '2026-03-12T00:00:00.000Z',
+    category: 'Health',
+    createdAt: '2026-03-12T00:00:00.000Z',
+    id: 'goal-1',
+    keywords: ['health'],
+    statement: 'Goal 1',
+  };
+  expect(() => goalSchema.parse(input)).not.toThrow();
+});
+
+it('parses a goal without archivedAt and defaults to undefined', () => {
+  const input = {
+    category: 'Health',
+    createdAt: '2026-03-12T00:00:00.000Z',
+    id: 'goal-1',
+    keywords: ['health'],
+    statement: 'Goal 1',
+  };
+  const result = goalSchema.parse(input);
+  expect(result.archivedAt).toBeUndefined();
+});
