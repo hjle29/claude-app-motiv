@@ -7,6 +7,7 @@ export const stepSchema = z.object({
   id: z.string(),
   isDone: z.boolean(),
   keywords: z.array(z.string()),
+  linkedRoutineIds: z.array(z.string()).default([]),
 });
 
 export type Step = z.infer<typeof stepSchema>;
