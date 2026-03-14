@@ -57,4 +57,14 @@ describe('goalStore', () => {
     goalStore.deleteGoal('goal-1');
     expect(goalStore.getGoals()).toHaveLength(0);
   });
+
+  it('does not count archived goals toward the maximum', () => {
+    goalStore.saveGoal(makeGoal(1));
+    goalStore.saveGoal(makeGoal(2));
+    goalStore.saveGoal(makeGoal(3));
+    // Archive goal-3 (upsert — no new slot consumed)
+    goalStore.saveGoal({ ...makeGoal(3), archivedAt: '2026-03-12T00:00:00.000Z' });
+    // Only 2 active goals, so adding goal-4 must succeed
+    expect(() => goalStore.saveGoal(makeGoal(4))).not.toThrow();
+  });
 });

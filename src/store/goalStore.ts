@@ -24,7 +24,8 @@ function saveGoal(goal: Goal): void {
   if (existingIndex >= 0) {
     updated = current.map(g => (g.id === goal.id ? goal : g));
   } else {
-    if (current.length >= MAX_GOALS) {
+    const activeCount = current.filter(g => !g.archivedAt).length;
+    if (activeCount >= MAX_GOALS) {
       throw new Error(`Maximum of ${MAX_GOALS} goals allowed`);
     }
     updated = [...current, goal];
