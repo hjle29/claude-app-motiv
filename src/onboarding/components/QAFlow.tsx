@@ -7,7 +7,7 @@ import { useTheme } from '@/theme';
 
 type Props = {
   readonly onComplete: (answers: string[], keywords: string[]) => void;
-  readonly rounds: [QARound, QARound, QARound];
+  readonly rounds: QARound[];
 };
 
 function QAFlow({ onComplete, rounds }: Props) {
@@ -18,16 +18,18 @@ function QAFlow({ onComplete, rounds }: Props) {
 
   const round = rounds[currentRound];
 
-  const handleSelect = (label: string, keyword: string) => {
+  const handleSelect = (label: string, keyword: string, terminal?: boolean) => {
     const newAnswers = [...selectedAnswers, label];
     const newKeywords = [...selectedKeywords, keyword];
 
-    if (currentRound < 2) {
+    const isLastRound = currentRound >= rounds.length - 1;
+
+    if (terminal || isLastRound) {
+      onComplete(newAnswers, newKeywords);
+    } else {
       setSelectedAnswers(newAnswers);
       setSelectedKeywords(newKeywords);
       setCurrentRound(previous => previous + 1);
-    } else {
-      onComplete(newAnswers, newKeywords);
     }
   };
 
@@ -39,7 +41,7 @@ function QAFlow({ onComplete, rounds }: Props) {
       {round.options.map(option => (
         <TouchableOpacity
           key={option.keyword}
-          onPress={() => { handleSelect(option.label, option.keyword); }}
+          onPress={() => { handleSelect(option.label, option.keyword, option.terminal); }}
           style={[gutters.marginBottom_12, gutters.paddingHorizontal_16, gutters.paddingVertical_12]}
           testID={`qa-option-${option.keyword}`}
         >
@@ -47,7 +49,7 @@ function QAFlow({ onComplete, rounds }: Props) {
         </TouchableOpacity>
       ))}
       <Text style={[fonts.size_12, fonts.gray200, gutters.marginTop_12]}>
-        Step {currentRound + 1} of 3
+        Step {currentRound + 1} of {rounds.length}
       </Text>
     </View>
   );
