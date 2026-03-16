@@ -51,8 +51,9 @@ function MonthlyCalendar({ month, monthRates, onSelectDate, selectedDate, year }
             }
             const date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             const rate = monthRates[date] ?? 0;
-            const bgColor =
-              rate === 0 ? colors.gray50 : rate < 1 ? colors.purple100 : colors.purple500;
+            const bgColor = rate === 0
+              ? colors.gray50
+              : colors.purple500 + Math.round((0.15 + rate * 0.85) * 255).toString(16).padStart(2, '0');
             const isSelected = date === selectedDate;
 
             return (
