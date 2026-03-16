@@ -1,4 +1,8 @@
+// src/services/suggestions.ts
+
 import { instance } from './instance';
+
+import { SUB_AREA_L1_FALLBACKS } from '@/constants/goalWizard';
 
 const STOP_WORDS = new Set([
   'a', 'an', 'and', 'are', 'as', 'at', 'be', 'been', 'but', 'by', 'can',
@@ -17,31 +21,6 @@ function extractKeywordsLocally(statement: string): string[] {
   )].slice(0, 5);
 }
 
-function reformatIntentLocally(intent: string): string[] {
-  const trimmed = intent.trim();
-  const upper = trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
-  const lower = trimmed.charAt(0).toLowerCase() + trimmed.slice(1);
-  return [
-    upper,
-    `Take consistent steps every day to achieve ${lower}`,
-    `In 5 years I will look back, proud I achieved ${lower}`,
-  ];
-}
-
-export async function generateGoalStatements(intent: string): Promise<string[]> {
-  try {
-    const response = await instance
-      .post('ai/goal-statements', { json: { intent }, timeout: 5000 })
-      .json<{ statements: string[] }>();
-    if (Array.isArray(response.statements) && response.statements.length > 0) {
-      return response.statements.slice(0, 3);
-    }
-    return reformatIntentLocally(intent);
-  } catch {
-    return reformatIntentLocally(intent);
-  }
-}
-
 export async function generateKeywords(statement: string): Promise<string[]> {
   try {
     const response = await instance
@@ -53,5 +32,77 @@ export async function generateKeywords(statement: string): Promise<string[]> {
     return extractKeywordsLocally(statement);
   } catch {
     return extractKeywordsLocally(statement);
+  }
+}
+
+// POST ai/sub-areas  { lifeArea } → { subAreas: string[] }
+export async function generateSubAreas(lifeArea: string): Promise<string[]> {
+  try {
+    const response = await instance
+      .post('ai/sub-areas', { json: { lifeArea }, timeout: 5000 })
+      .json<{ subAreas: string[] }>();
+    if (Array.isArray(response.subAreas) && response.subAreas.length > 0) {
+      return response.subAreas.slice(0, 5);
+    }
+    return SUB_AREA_L1_FALLBACKS[lifeArea] ?? [];
+  } catch {
+    return SUB_AREA_L1_FALLBACKS[lifeArea] ?? [];
+  }
+}
+
+// POST ai/narrower-sub-areas  { lifeArea, subArea } → { subAreas: string[] }
+export async function generateNarrowerSubAreas(
+  lifeArea: string,
+  subArea: string,
+): Promise<string[]> {
+  try {
+    const response = await instance
+      .post('ai/narrower-sub-areas', { json: { lifeArea, subArea }, timeout: 5000 })
+      .json<{ subAreas: string[] }>();
+    if (Array.isArray(response.subAreas) && response.subAreas.length > 0) {
+      return response.subAreas.slice(0, 5);
+    }
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+// POST ai/goal-question  { lifeArea, subArea1, subArea2, questionNumber, previousAnswers }
+//   → { question: string; options: string[] }
+export async function generateGoalQuestion(context: {
+  lifeArea: string;
+  subArea1: string;
+  subArea2: string;
+  questionNumber: 1 | 2 | 3;
+  previousAnswers: string[];
+}): Promise<{ question: string; options: string[] }> {
+  try {
+    const response = await instance
+      .post('ai/goal-question', { json: context, timeout: 5000 })
+      .json<{ question: string; options: string[] }>();
+    if (response.question && Array.isArray(response.options)) {
+      return { options: response.options.slice(0, 4), question: response.question };
+    }
+    return { options: [], question: '' };
+  } catch {
+    return { options: [], question: '' };
+  }
+}
+
+// POST ai/synthesize-goal  { lifeArea, subArea1, subArea2, answers } → { statement: string }
+export async function synthesizeGoalStatement(context: {
+  lifeArea: string;
+  subArea1: string;
+  subArea2: string;
+  answers: string[];
+}): Promise<string> {
+  try {
+    const response = await instance
+      .post('ai/synthesize-goal', { json: context, timeout: 8000 })
+      .json<{ statement: string }>();
+    return response.statement ?? '';
+  } catch {
+    return '';
   }
 }
