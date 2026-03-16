@@ -488,7 +488,7 @@ function GoalWizard({ futureSelf, goal, onClose, onSave, visible }: Props) {
                       updated[currentQuestionIdx] = v;
                       setAnswers(updated);
                     },
-                    `wizard-answer-${currentQuestionIdx}`,
+                    `wizard-answer-${currentQuestionIdx + 1}`,
                   )}
                 </>
               )}
