@@ -278,8 +278,8 @@ function GoalWizard({ futureSelf, goal, onClose, onSave, visible }: Props) {
     const savedFutureSelf: FutureSelf | undefined = vision.trim()
       ? { goalId: saved.id, narrative: vision.trim(), timeframe: '5yr' }
       : undefined;
-    setSaving(false);
     onSave(saved, savedFutureSelf);
+    setSaving(false);
   }
 
   function addCustomKeyword() {
