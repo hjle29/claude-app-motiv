@@ -38,11 +38,11 @@ module.exports = {
         exclude:
           /node_modules\/(?!(react-native-|@react-navigation|@react-native-masked-view|@react-native\/assets-registry)\/).*/,
       },
-      // Fix ESM "fully specified" resolution for @react-navigation packages
+      // Fix ESM "fully specified" resolution for all node_modules
       {
-        test: /\.js$/,
+        test: /\.m?js$/,
         resolve: { fullySpecified: false },
-        include: /node_modules\/@react-navigation/,
+        include: /node_modules/,
       },
       {
         test: /\.svg$/,
