@@ -96,13 +96,13 @@ describe('Goals screen', () => {
     expect(screen.queryByTestId('goals-add-button')).toBeNull();
   });
 
-  it('opens GoalFormSheet when Add Goal is pressed', () => {
+  it('opens GoalWizard when Add Goal is pressed', () => {
     render(
       <TestAppWrapper>
         <Goals />
       </TestAppWrapper>,
     );
     fireEvent.press(screen.getByTestId('goals-add-button'));
-    expect(screen.getByTestId('goal-form-statement')).toBeTruthy();
+    expect(screen.getByTestId('wizard-next')).toBeTruthy();
   });
 });
